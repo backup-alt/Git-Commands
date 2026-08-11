@@ -248,6 +248,71 @@
   </section>
 
   <section class="section">
+    <h2>GitHub Pages — rebuild & deploy</h2>
+    <p class="desc">Use the workflow that matches how your frontend is deployed. For modern frontend projects, GitHub Actions is usually the cleanest option.</p>
+
+    <div class="note">
+      <strong>First check your project:</strong> Run <code>git status -sb</code> and make sure your changes are committed before rebuilding or deploying.
+    </div>
+
+    <h3 style="margin:20px 0 8px;">A. Build the frontend locally</h3>
+    <p class="desc">For Vite / React / most Node-based frontend projects:</p>
+    <div class="command"><span>npm install</span><button class="copy" data-copy="npm install">Copy</button></div>
+    <div class="command"><span>npm run build</span><button class="copy" data-copy="npm run build">Copy</button></div>
+    <p class="desc">This normally creates a <code>dist</code> folder. Some projects use <code>build</code> instead.</p>
+
+    <h3 style="margin:20px 0 8px;">B. Test the production build locally</h3>
+    <p class="desc">If your project provides a preview script:</p>
+    <div class="command"><span>npm run preview</span><button class="copy" data-copy="npm run preview">Copy</button></div>
+
+    <h3 style="margin:20px 0 8px;">C. Commit and push your source changes</h3>
+    <div class="command"><span>git status -sb</span><button class="copy" data-copy="git status -sb">Copy</button></div>
+    <div class="command"><span>git add &lt;files&gt;</span><button class="copy" data-copy="git add <files>">Copy</button></div>
+    <div class="command"><span>git commit -m "Update frontend"</span><button class="copy" data-copy='git commit -m "Update frontend"'>Copy</button></div>
+    <div class="command"><span>git pull --rebase origin main</span><button class="copy" data-copy="git pull --rebase origin main">Copy</button></div>
+    <div class="command"><span>git push origin main</span><button class="copy" data-copy="git push origin main">Copy</button></div>
+
+    <div class="note">
+      <strong>With GitHub Actions:</strong> If your repository is configured to deploy automatically on pushes to <code>main</code>, the push above is enough. GitHub Actions will install dependencies, build the frontend, and deploy it.
+    </div>
+
+    <h3 style="margin:24px 0 8px;">D. Manually trigger the GitHub Action</h3>
+    <p class="desc">If the workflow has <code>workflow_dispatch</code> enabled, go to GitHub → <strong>Actions</strong> → select your frontend deployment workflow → <strong>Run workflow</strong>.</p>
+
+    <h3 style="margin:24px 0 8px;">E. Check the deployment from the terminal</h3>
+    <p class="desc">See the latest workflow runs:</p>
+    <div class="command"><span>gh run list</span><button class="copy" data-copy="gh run list">Copy</button></div>
+    <p class="desc">Watch the latest run:</p>
+    <div class="command"><span>gh run watch</span><button class="copy" data-copy="gh run watch">Copy</button></div>
+    <p class="desc">These require the GitHub CLI (<code>gh</code>) to be installed and authenticated.</p>
+
+    <h3 style="margin:24px 0 8px;">F. If the Action failed</h3>
+    <p class="desc">Get the failed workflow logs:</p>
+    <div class="command"><span>gh run view --log-failed</span><button class="copy" data-copy="gh run view --log-failed">Copy</button></div>
+    <p class="desc">Fix the frontend/build issue, then commit and push again:</p>
+    <div class="command"><span>git add &lt;files&gt;</span><button class="copy" data-copy="git add <files>">Copy</button></div>
+    <div class="command"><span>git commit -m "Fix deployment"</span><button class="copy" data-copy='git commit -m "Fix deployment"'>Copy</button></div>
+    <div class="command"><span>git pull --rebase origin main</span><button class="copy" data-copy="git pull --rebase origin main">Copy</button></div>
+    <div class="command"><span>git push origin main</span><button class="copy" data-copy="git push origin main">Copy</button></div>
+
+    <div class="note danger">
+      <strong>Important:</strong> Don't automatically commit the generated <code>dist</code> folder. With a GitHub Actions deployment, the workflow should normally build <code>dist</code> and publish it for you. Follow your repository's existing deployment configuration.
+    </div>
+
+    <h3 style="margin:24px 0 8px;">Quick deployment routine</h3>
+    <p class="desc">If your GitHub Action is already configured to deploy on every push to <code>main</code>:</p>
+    <div class="command"><span>npm run build</span><button class="copy" data-copy="npm run build">Copy</button></div>
+    <div class="command"><span>git status -sb</span><button class="copy" data-copy="git status -sb">Copy</button></div>
+    <div class="command"><span>git add &lt;files&gt;</span><button class="copy" data-copy="git add <files>">Copy</button></div>
+    <div class="command"><span>git commit -m "Update frontend"</span><button class="copy" data-copy='git commit -m "Update frontend"'>Copy</button></div>
+    <div class="command"><span>git pull --rebase origin main</span><button class="copy" data-copy="git pull --rebase origin main">Copy</button></div>
+    <div class="command"><span>git push origin main</span><button class="copy" data-copy="git push origin main">Copy</button></div>
+    <div class="note">
+      <strong>Then:</strong> GitHub → Actions → watch the deployment → open your GitHub Pages site.
+    </div>
+  </section>
+
+  <section class="section">
     <h2>Useful commands</h2>
     <div class="grid">
       <div class="mini">
