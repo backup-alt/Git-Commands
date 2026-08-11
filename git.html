@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Git Push Cheat Sheet</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #f6f7f9;
+    color: #17181a;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 48px 24px 72px; }
+  header { margin-bottom: 34px; }
+  .eyebrow {
+    display: inline-block; padding: 6px 10px; border-radius: 999px;
+    background: #e9edf2; color: #4b5563; font-size: 12px; font-weight: 700;
+    letter-spacing: .06em; text-transform: uppercase;
+  }
+  h1 { font-size: clamp(34px, 6vw, 54px); line-height: 1.05; margin: 14px 0 10px; letter-spacing: -0.04em; }
+  .subtitle { color: #626872; max-width: 650px; font-size: 17px; }
+  .section {
+    background: #fff; border: 1px solid #e2e5e9; border-radius: 18px;
+    padding: 24px; margin: 18px 0; box-shadow: 0 5px 18px rgba(0,0,0,.035);
+  }
+  h2 { margin: 0 0 6px; font-size: 22px; letter-spacing: -.02em; }
+  .desc { color: #737982; margin: 0 0 18px; font-size: 14px; }
+  .command {
+    position: relative; background: #17191c; color: #f3f4f6;
+    border-radius: 12px; padding: 15px 52px 15px 17px; margin: 9px 0;
+    font: 14px/1.55 "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    overflow-x: auto;
+  }
+  .command .comment { color: #8d949e; }
+  button.copy {
+    position: absolute; right: 9px; top: 9px; border: 0; border-radius: 8px;
+    padding: 7px 9px; background: #30343a; color: #dfe3e8; cursor: pointer;
+    font-size: 12px;
+  }
+  button.copy:hover { background: #41464e; }
+  .note {
+    border-left: 4px solid #202328; background: #f0f2f4;
+    padding: 13px 15px; border-radius: 8px; margin-top: 16px; font-size: 14px;
+  }
+  .danger { border-left-color: #8b1e1e; background: #fbf0f0; }
+  .grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; }
+  .mini { margin: 0; }
+  .mini h3 { margin: 0 0 5px; font-size: 16px; }
+  .mini p { margin: 0 0 10px; color: #6c727a; font-size: 13px; }
+  footer { text-align: center; color: #8a9097; font-size: 13px; margin-top: 28px; }
+  body.dark {
+    background: #0f1115;
+    color: #f1f3f5;
+  }
+  body.dark .eyebrow { background: #252a31; color: #b9c0c9; }
+  body.dark .subtitle, body.dark .desc, body.dark .mini p { color: #9da5af; }
+  body.dark .section { background: #171a1f; border-color: #292e36; box-shadow: none; }
+  body.dark .note { background: #22262c; color: #e6e9ed; }
+  body.dark .note.danger { background: #2b1d1f; }
+  body.dark footer { color: #707780; }
+  .topbar { display:flex; justify-content:flex-end; margin-bottom:12px; }
+  .theme-btn {
+    border: 1px solid #dfe3e7; background:#fff; color:#30343a;
+    border-radius:10px; padding:9px 12px; cursor:pointer; font-weight:600;
+  }
+  body.dark .theme-btn { background:#20242a; border-color:#343a43; color:#e7e9ec; }
+  .randomizer {
+    margin-top: 12px; padding: 14px; border: 1px dashed #cfd4da;
+    border-radius: 10px; background: #fafbfc;
+  }
+  body.dark .randomizer { background:#1d2025; border-color:#3a414a; }
+  .random-row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .random-name {
+    flex:1; min-width:180px; padding:10px 12px; border-radius:8px;
+    border:1px solid #d8dde3; background:#fff; color:#25282c;
+    font: 13px monospace;
+  }
+  body.dark .random-name { background:#111419; color:#f1f3f5; border-color:#3a414a; }
+  .random-btn {
+    border:0; border-radius:8px; padding:10px 13px; cursor:pointer;
+    background:#25292f; color:#fff; font-weight:600;
+  }
+  body.dark .random-btn { background:#e8eaed; color:#17191c; }
+  @media (max-width: 680px) {
+    .wrap { padding: 30px 16px 50px; }
+    .section { padding: 18px; }
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <button class="theme-btn" id="themeBtn">Dark mode</button>
+  </div>
+  <header>
+    <span class="eyebrow">Git • Quick Reference</span>
+    <h1>Push your latest code.</h1>
+    <p class="subtitle">A clean cheat sheet for the Git commands you actually need — from your first push to everyday updates.</p>
+  </header>
+
+  <section class="section">
+    <h2>Everyday workflow</h2>
+    <p class="desc">Use this when the repository is already connected to GitHub.</p>
+
+    <div class="command"><span>git status -sb</span><button class="copy" data-copy="git status -sb">Copy</button></div>
+    <div class="command"><span>git add &lt;files&gt;</span><button class="copy" data-copy="git add &lt;files&gt;">Copy</button></div>
+    <div class="command"><span id="commitCommand">git commit -m "Your message"</span><button class="copy" id="commitCopy" data-copy='git commit -m "Your message"'>Copy</button></div>
+    <div class="randomizer">
+      <strong>Can't think of a commit name?</strong>
+      <p class="desc" style="margin:4px 0 10px;">Generate a random commit message and copy it.</p>
+      <div class="random-row">
+        <input class="random-name" id="randomCommit" readonly value='git commit -m "GYUNK&*^232"'>
+        <button class="random-btn" id="randomBtn">Randomize</button>
+        <button class="copy" style="position:static" id="randomCopy" data-copy='git commit -m "GYUNK&*^232"'>Copy</button>
+      </div>
+    </div>
+    <div class="command"><span>git pull --rebase origin main</span><button class="copy" data-copy="git pull --rebase origin main">Copy</button></div>
+    <div class="command"><span>git push</span><button class="copy" data-copy="git push">Copy</button></div>
+    <div class="command"><span>git status -sb</span><button class="copy" data-copy="git status -sb">Copy</button></div>
+
+    <div class="note">
+      <strong>Think:</strong> Check → Stage → Commit → Sync → Push → Confirm
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>First push to a new GitHub repo</h2>
+    <p class="desc">Use this when you have a local project and a completely empty GitHub repository.</p>
+
+    <div class="command"><span>cd path\to\your-project</span><button class="copy" data-copy="cd path\to\your-project">Copy</button></div>
+    <div class="command"><span>git init</span><button class="copy" data-copy="git init">Copy</button></div>
+    <div class="command"><span>git add .</span><button class="copy" data-copy="git add .">Copy</button></div>
+    <div class="command"><span>git commit -m "Initial commit"</span><button class="copy" data-copy='git commit -m "Initial commit"'>Copy</button></div>
+    <div class="command"><span>git branch -M main</span><button class="copy" data-copy="git branch -M main">Copy</button></div>
+    <div class="command"><span>git remote add origin https://github.com/USERNAME/REPO.git</span><button class="copy" data-copy="git remote add origin https://github.com/USERNAME/REPO.git">Copy</button></div>
+    <div class="command"><span>git push -u origin main</span><button class="copy" data-copy="git push -u origin main">Copy</button></div>
+
+    <div class="note">
+      <strong>After this:</strong> Git remembers the upstream, so future pushes can simply use <code>git push</code>.
+    </div>
+    <div class="note danger">
+      <strong>Important:</strong> If the GitHub repo already contains a README, .gitignore, license, or other commits, don't blindly use this workflow. The histories need to be reconciled first.
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Useful commands</h2>
+    <div class="grid">
+      <div class="mini">
+        <h3>Check remote changes</h3>
+        <p>Downloads remote commits without changing your files.</p>
+        <div class="command"><span>git fetch origin</span><button class="copy" data-copy="git fetch origin">Copy</button></div>
+      </div>
+      <div class="mini">
+        <h3>See remote commits</h3>
+        <p>Shows the latest six commits on GitHub's main branch.</p>
+        <div class="command"><span>git log --oneline origin/main -6</span><button class="copy" data-copy="git log --oneline origin/main -6">Copy</button></div>
+      </div>
+      <div class="mini">
+        <h3>Pull without rebase</h3>
+        <p>Fetches and merges remote changes.</p>
+        <div class="command"><span>git pull origin main</span><button class="copy" data-copy="git pull origin main">Copy</button></div>
+      </div>
+      <div class="mini">
+        <h3>Push a new branch</h3>
+        <p>First push for a newly created branch.</p>
+        <div class="command"><span>git push -u origin my-feature-branch</span><button class="copy" data-copy="git push -u origin my-feature-branch">Copy</button></div>
+      </div>
+      <div class="mini">
+        <h3>Rebase conflict</h3>
+        <p>After resolving a conflict in the files.</p>
+        <div class="command"><span>git add &lt;resolved-file&gt;</span><button class="copy" data-copy="git add <resolved-file>">Copy</button></div>
+        <div class="command"><span>git rebase --continue</span><button class="copy" data-copy="git rebase --continue">Copy</button></div>
+      </div>
+      <div class="mini">
+        <h3>Cancel rebase</h3>
+        <p>Returns you to the state before the rebase started.</p>
+        <div class="command"><span>git rebase --abort</span><button class="copy" data-copy="git rebase --abort">Copy</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>When push is rejected</h2>
+    <p class="desc">Usually means the remote branch has commits you don't have locally.</p>
+    <div class="command"><span>git pull --rebase origin main</span><button class="copy" data-copy="git pull --rebase origin main">Copy</button></div>
+    <div class="command"><span>git push</span><button class="copy" data-copy="git push">Copy</button></div>
+  </section>
+
+  <footer>Git commands • Keep this page bookmarked</footer>
+</div>
+
+<script>
+const themeBtn = document.getElementById("themeBtn");
+const savedTheme = localStorage.getItem("git-cheat-theme");
+if (savedTheme === "dark") {
+  document.body.classList.add("dark");
+  themeBtn.textContent = "Light mode";
+}
+themeBtn.addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+  const dark = document.body.classList.contains("dark");
+  localStorage.setItem("git-cheat-theme", dark ? "dark" : "light");
+  themeBtn.textContent = dark ? "Light mode" : "Dark mode";
+});
+
+function randomCommit() {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+  let name = "";
+  const length = Math.floor(Math.random() * 7) + 9;
+  for (let i = 0; i < length; i++) {
+    name += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return `git commit -m "${name}"`;
+}
+
+const randomInput = document.getElementById("randomCommit");
+const randomBtn = document.getElementById("randomBtn");
+const randomCopy = document.getElementById("randomCopy");
+
+randomBtn.addEventListener("click", () => {
+  const command = randomCommit();
+  randomInput.value = command;
+  randomCopy.dataset.copy = command;
+});
+
+document.querySelectorAll(".copy").forEach(button => {
+  button.addEventListener("click", async () => {
+    const original = button.textContent;
+    try {
+      await navigator.clipboard.writeText(button.dataset.copy);
+      button.textContent = "Copied!";
+      setTimeout(() => button.textContent = original, 1200);
+    } catch {
+      button.textContent = "Failed";
+      setTimeout(() => button.textContent = original, 1200);
+    }
+  });
+});
+</script>
+</body>
+</html>
