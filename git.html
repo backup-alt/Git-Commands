@@ -136,7 +136,16 @@
     <div class="command"><span>git add .</span><button class="copy" data-copy="git add .">Copy</button></div>
     <div class="command"><span>git commit -m "Initial commit"</span><button class="copy" data-copy='git commit -m "Initial commit"'>Copy</button></div>
     <div class="command"><span>git branch -M main</span><button class="copy" data-copy="git branch -M main">Copy</button></div>
-    <div class="command"><span>git remote add origin https://github.com/USERNAME/REPO.git</span><button class="copy" data-copy="git remote add origin https://github.com/USERNAME/REPO.git">Copy</button></div>
+    <div class="command"><span id="remoteCommand">git remote add origin https://github.com/USERNAME/REPO.git</span><button class="copy" id="remoteCopy" data-copy="git remote add origin https://github.com/USERNAME/REPO.git">Copy</button></div>
+    <div class="randomizer">
+      <strong>Customize the repository URL</strong>
+      <p class="desc" style="margin:4px 0 10px;">Paste your GitHub repository URL and the command will be generated automatically.</p>
+      <div class="random-row">
+        <input class="random-name" id="repoUrl" type="url" placeholder="https://github.com/username/repository.git">
+        <button class="random-btn" id="repoBtn">Generate</button>
+        <button class="copy" style="position:static" id="repoCopy" data-copy="git remote add origin https://github.com/USERNAME/REPO.git">Copy</button>
+      </div>
+    </div>
     <div class="command"><span>git push -u origin main</span><button class="copy" data-copy="git push -u origin main">Copy</button></div>
 
     <div class="note">
@@ -144,6 +153,97 @@
     </div>
     <div class="note danger">
       <strong>Important:</strong> If the GitHub repo already contains a README, .gitignore, license, or other commits, don't blindly use this workflow. The histories need to be reconciled first.
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>When Git says you can't push or rebase</h2>
+    <p class="desc">This is the safe recovery flow for the exact situation where you changed a file, forgot to stage it, and GitHub has commits you don't have locally.</p>
+
+    <div class="note danger">
+      <strong>Don't panic — your changes are still there.</strong><br>
+      If Git says <code>Changes not staged for commit</code>, it means your file was changed but has not been added to the next commit yet.
+    </div>
+
+    <h3 style="margin:20px 0 8px;">Step 1 — Check what actually changed</h3>
+    <div class="command"><span>git status -sb</span><button class="copy" data-copy="git status -sb">Copy</button></div>
+    <p class="desc">Look at the exact filename Git shows. In your case it was <code>git.html</code>, not <code>index.html</code>.</p>
+
+    <h3 style="margin:20px 0 8px;">Step 2 — Stage the file you actually changed</h3>
+    <div class="command"><span>git add git.html</span><button class="copy" data-copy="git add git.html">Copy</button></div>
+    <p class="desc">Replace <code>git.html</code> with the filename shown by <code>git status</code>.</p>
+
+    <h3 style="margin:20px 0 8px;">Step 3 — Commit your change</h3>
+    <div class="command"><span>git commit -m "Update Git command guide"</span><button class="copy" data-copy='git commit -m "Update Git command guide"'>Copy</button></div>
+
+    <h3 style="margin:20px 0 8px;">Step 4 — Bring GitHub's changes into your branch</h3>
+    <div class="command"><span>git pull --rebase origin main</span><button class="copy" data-copy="git pull --rebase origin main">Copy</button></div>
+
+    <h3 style="margin:20px 0 8px;">Step 5 — Push</h3>
+    <div class="command"><span>git push -u origin main</span><button class="copy" data-copy="git push -u origin main">Copy</button></div>
+
+    <div class="note">
+      <strong>Why this works:</strong> You first save your local HTML change in a commit. Then Git can safely rebase that commit on top of the commits already on GitHub. Finally, you push the combined history.
+    </div>
+
+    <h3 style="margin:24px 0 8px;">If you haven't committed yet</h3>
+    <p class="desc">If <code>git pull --rebase</code> says <code>You have unstaged changes</code>, do this instead:</p>
+    <div class="command"><span>git status -sb</span><button class="copy" data-copy="git status -sb">Copy</button></div>
+    <div class="command"><span>git add &lt;the-file-Git-showed&gt;</span><button class="copy" data-copy="git add <the-file-Git-showed>">Copy</button></div>
+    <div class="command"><span>git commit -m "Your message"</span><button class="copy" data-copy='git commit -m "Your message"'>Copy</button></div>
+    <div class="command"><span>git pull --rebase origin main</span><button class="copy" data-copy="git pull --rebase origin main">Copy</button></div>
+    <div class="command"><span>git push</span><button class="copy" data-copy="git push">Copy</button></div>
+
+    <h3 style="margin:24px 0 8px;">If you really don't want to commit your changes yet</h3>
+    <p class="desc">Temporarily put your local changes aside, update from GitHub, then bring your changes back.</p>
+    <div class="command"><span>git stash push -m "WIP"</span><button class="copy" data-copy='git stash push -m "WIP"'>Copy</button></div>
+    <div class="command"><span>git pull --rebase origin main</span><button class="copy" data-copy="git pull --rebase origin main">Copy</button></div>
+    <div class="command"><span>git stash pop</span><button class="copy" data-copy="git stash pop">Copy</button></div>
+    <div class="note danger">
+      <strong>Don't use this just to fix a normal push.</strong> If your change is ready, committing it first is usually simpler.
+    </div>
+
+    <h3 style="margin:24px 0 8px;">If you accidentally stage the wrong file</h3>
+    <div class="command"><span>git restore --staged &lt;file&gt;</span><button class="copy" data-copy="git restore --staged <file>">Copy</button></div>
+    <p class="desc">This removes the file from staging but does not delete your actual changes.</p>
+
+    <div class="note danger">
+      <strong>Never use <code>git reset --hard</code> as a random fix.</strong>
+      It can permanently discard local work. Only use destructive Git commands when you know exactly what they will remove.
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Your exact situation</h2>
+    <p class="desc">For the commands you just ran, this is what happened.</p>
+    <div class="grid">
+      <div class="mini">
+        <h3>1. Commit failed</h3>
+        <p>You changed <code>git.html</code>, but did not stage it first.</p>
+        <div class="command"><span>git add git.html</span><button class="copy" data-copy="git add git.html">Copy</button></div>
+      </div>
+      <div class="mini">
+        <h3>2. Wrong filename</h3>
+        <p>You ran <code>git add index.html</code>, but that file doesn't exist in this project.</p>
+      </div>
+      <div class="mini">
+        <h3>3. Push was rejected</h3>
+        <p>GitHub already has commits that your local branch doesn't have.</p>
+        <div class="command"><span>git pull --rebase origin main</span><button class="copy" data-copy="git pull --rebase origin main">Copy</button></div>
+      </div>
+      <div class="mini">
+        <h3>4. Rebase was blocked</h3>
+        <p>Your <code>git.html</code> change was still unstaged, so Git refused to start the rebase.</p>
+      </div>
+    </div>
+    <div class="note">
+      <strong>The fix from your current state:</strong>
+      <div style="margin-top:10px;">
+        <div class="command"><span>git add git.html</span><button class="copy" data-copy="git add git.html">Copy</button></div>
+        <div class="command"><span>git commit -m "Update Git guide"</span><button class="copy" data-copy='git commit -m "Update Git guide"'>Copy</button></div>
+        <div class="command"><span>git pull --rebase origin main</span><button class="copy" data-copy="git pull --rebase origin main">Copy</button></div>
+        <div class="command"><span>git push -u origin main</span><button class="copy" data-copy="git push -u origin main">Copy</button></div>
+      </div>
     </div>
   </section>
 
@@ -226,6 +326,29 @@ randomBtn.addEventListener("click", () => {
   const command = randomCommit();
   randomInput.value = command;
   randomCopy.dataset.copy = command;
+});
+
+const repoUrl = document.getElementById("repoUrl");
+const repoBtn = document.getElementById("repoBtn");
+const remoteCommand = document.getElementById("remoteCommand");
+const remoteCopy = document.getElementById("remoteCopy");
+const repoCopy = document.getElementById("repoCopy");
+
+repoBtn.addEventListener("click", () => {
+  const url = repoUrl.value.trim();
+  if (!url) {
+    repoUrl.focus();
+    return;
+  }
+  const command = `git remote add origin ${url}`;
+  remoteCommand.textContent = command;
+  remoteCopy.dataset.copy = command;
+  repoCopy.dataset.copy = command;
+  repoCopy.textContent = "Copy";
+});
+
+repoUrl.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") repoBtn.click();
 });
 
 document.querySelectorAll(".copy").forEach(button => {
